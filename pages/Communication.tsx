@@ -7,10 +7,9 @@ import { User, Book, ArrowRight, Handshake } from 'lucide-react';
 interface CardProps {
   item: VocabItem;
   theme?: 'default' | 'red' | 'blue' | 'gold' | 'green';
-  mini?: boolean;
 }
 
-const Card: React.FC<CardProps> = ({ item, theme = 'default', mini = false }) => {
+const Card: React.FC<CardProps> = ({ item, theme = 'default' }) => {
   const getColors = () => {
     switch(theme) {
       case 'red': return 'bg-red-50 border-red-100 hover:bg-red-100 text-red-900';
@@ -26,29 +25,30 @@ const Card: React.FC<CardProps> = ({ item, theme = 'default', mini = false }) =>
   return (
     <div 
       onClick={() => playText(item.hanzi)}
-      className={`relative rounded-lg border cursor-pointer transition-all active:scale-95 group ${colors} p-3`}
+      className={`relative rounded-xl border cursor-pointer transition-all active:scale-95 group ${colors} p-3 md:p-5`}
     >
-      <div className="flex justify-between items-start mb-1">
+      <div className="flex justify-between items-start mb-1 md:mb-2">
          {item.category && (
-           <span className="text-[9px] font-bold uppercase tracking-wider opacity-60 truncate pr-4">
+           <span className="text-[9px] md:text-xs font-bold uppercase tracking-wider opacity-60 truncate pr-4">
              {item.category}
            </span>
          )}
-         <div className={`absolute top-2 right-2 opacity-30 group-hover:opacity-100`}>
-            <AudioButton text={item.hanzi} size="sm" />
+         <div className={`absolute top-2 right-2 md:top-3 md:right-3 opacity-30 group-hover:opacity-100`}>
+            <AudioButton text={item.hanzi} size="sm" className="md:hidden" /> {/* Small icon mobile */}
+            <AudioButton text={item.hanzi} size="md" className="hidden md:flex" /> {/* Medium icon desktop */}
          </div>
       </div>
       
-      <div className="flex items-baseline gap-2 flex-wrap">
-        <span className="font-chinese text-2xl leading-none">
+      <div className="flex flex-col md:gap-1">
+        <span className="font-chinese text-2xl md:text-4xl leading-none md:mb-1">
             {item.hanzi}
         </span>
-        <span className="font-modern font-bold text-xs opacity-80">
+        <span className="font-modern font-bold text-xs md:text-base opacity-80">
             {item.pinyin}
         </span>
       </div>
       
-      <div className="mt-1 text-[11px] opacity-70 leading-tight font-medium">
+      <div className="mt-1 md:mt-3 text-[11px] md:text-sm opacity-70 leading-tight font-medium border-t border-black/5 pt-1 md:pt-2">
         {item.pt}
       </div>
     </div>
@@ -62,35 +62,38 @@ const SentenceBuilder: React.FC<{
   pt: string, 
   breakdown: {hanzi: string, pinyin: string, pt: string, type: string}[] 
 }> = ({ hanzi, pinyin, pt, breakdown }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-4">
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-4 md:mb-6 hover:shadow-md transition-shadow">
     {/* Cabeçalho da Frase */}
-    <div className="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+    <div className="p-3 md:p-5 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
       <div>
-        <h4 className="font-bold text-slate-800 text-sm md:text-base">{pt}</h4>
-        <p className="text-yellow-600 font-bold font-modern text-xs">{pinyin}</p>
+        <h4 className="font-bold text-slate-800 text-sm md:text-lg">{pt}</h4>
+        <p className="text-yellow-600 font-bold font-modern text-xs md:text-sm">{pinyin}</p>
       </div>
-      <AudioButton text={hanzi} size="sm" />
+      <div className="flex items-center gap-3">
+          <span className="hidden md:inline text-xs text-slate-400 font-bold uppercase">Ouvir frase completa</span>
+          <AudioButton text={hanzi} size="md" />
+      </div>
     </div>
     
-    {/* Blocos da Frase - Flex Wrap ao invés de Scroll */}
-    <div className="p-3">
-      <div className="flex flex-wrap gap-2 justify-start items-start">
+    {/* Blocos da Frase */}
+    <div className="p-3 md:p-6 bg-white/50">
+      <div className="flex flex-wrap gap-2 md:gap-4 justify-start items-start">
         {breakdown.map((block, idx) => (
           <div key={idx} className="flex flex-col items-center group">
              {/* Tipo Gramatical */}
-             <span className="text-[8px] uppercase font-bold text-slate-400 mb-1 tracking-wider">{block.type}</span>
+             <span className="text-[8px] md:text-[10px] uppercase font-bold text-slate-400 mb-1 tracking-wider">{block.type}</span>
              
              {/* Bloco Visual */}
              <div 
                 onClick={() => playText(block.hanzi)}
-                className="bg-slate-800 text-white py-2 px-3 rounded-md min-w-[50px] text-center cursor-pointer hover:bg-wudang-gold transition-colors shadow-sm"
+                className="bg-slate-800 text-white py-2 px-3 md:py-3 md:px-5 rounded-md md:rounded-lg min-w-[50px] md:min-w-[80px] text-center cursor-pointer hover:bg-wudang-gold hover:-translate-y-0.5 transition-all shadow-sm"
              >
-                <div className="text-[10px] text-yellow-400/80 mb-0.5 font-modern leading-none">{block.pinyin}</div>
-                <div className="text-lg font-chinese leading-tight">{block.hanzi}</div>
+                <div className="text-[10px] md:text-xs text-yellow-400/80 mb-0.5 font-modern leading-none">{block.pinyin}</div>
+                <div className="text-lg md:text-3xl font-chinese leading-tight">{block.hanzi}</div>
              </div>
              
              {/* Tradução */}
-             <span className="text-[9px] font-bold text-wudang-blue mt-1 text-center max-w-[60px] leading-tight group-hover:text-wudang-gold transition-colors">{block.pt}</span>
+             <span className="text-[9px] md:text-xs font-bold text-wudang-blue mt-1 md:mt-2 text-center max-w-[60px] md:max-w-[100px] leading-tight group-hover:text-wudang-gold transition-colors">{block.pt}</span>
           </div>
         ))}
       </div>
@@ -181,42 +184,42 @@ const Communication: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-8 pb-10">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl md:text-3xl font-bold text-wudang-blue font-serif">Comunicação</h2>
-        <p className="text-slate-500 font-sans text-xs md:text-sm">Vocabulário essencial e etiqueta do guerreiro.</p>
+    <div className="space-y-8 md:space-y-16 pb-10">
+      <div className="text-center space-y-2 md:space-y-4">
+        <h2 className="text-2xl md:text-4xl font-bold text-wudang-blue font-serif">Comunicação</h2>
+        <p className="text-slate-500 font-sans text-xs md:text-base max-w-2xl mx-auto">Vocabulário essencial e etiqueta do guerreiro. Toque nos cartões para ouvir a pronúncia.</p>
       </div>
 
       {/* 1. PRONOMES */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-           <div className="bg-wudang-blue p-1.5 rounded text-white"><User size={16} /></div>
-           <h3 className="font-bold text-wudang-blue uppercase tracking-wider text-xs md:text-sm">1. Pronomes (Dàicí)</h3>
+        <div className="flex items-center gap-2 mb-4 md:mb-6">
+           <div className="bg-wudang-blue p-1.5 md:p-2 rounded text-white"><User size={16} className="md:w-6 md:h-6" /></div>
+           <h3 className="font-bold text-wudang-blue uppercase tracking-wider text-xs md:text-lg">1. Pronomes (Dàicí)</h3>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-4">
           {pronouns.map((item) => <Card key={item.pinyin} item={item} theme="blue" />)}
         </div>
       </section>
 
       {/* 2. SUBSTANTIVOS */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-           <div className="bg-wudang-gold p-1.5 rounded text-white"><Book size={16} /></div>
-           <h3 className="font-bold text-wudang-gold uppercase tracking-wider text-xs md:text-sm">2. Vocabulário do Dojo</h3>
+        <div className="flex items-center gap-2 mb-4 md:mb-6">
+           <div className="bg-wudang-gold p-1.5 md:p-2 rounded text-white"><Book size={16} className="md:w-6 md:h-6" /></div>
+           <h3 className="font-bold text-wudang-gold uppercase tracking-wider text-xs md:text-lg">2. Vocabulário do Dojo</h3>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 md:gap-4">
           {nouns.map((item) => <Card key={item.pinyin} item={item} theme="gold" />)}
         </div>
       </section>
 
       {/* 3. ESTRUTURA DE FRASES */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-           <div className="bg-slate-700 p-1.5 rounded text-white"><ArrowRight size={16} /></div>
-           <h3 className="font-bold text-slate-700 uppercase tracking-wider text-xs md:text-sm">3. Frases Úteis</h3>
+        <div className="flex items-center gap-2 mb-4 md:mb-6">
+           <div className="bg-slate-700 p-1.5 md:p-2 rounded text-white"><ArrowRight size={16} className="md:w-6 md:h-6" /></div>
+           <h3 className="font-bold text-slate-700 uppercase tracking-wider text-xs md:text-lg">3. Frases Úteis</h3>
         </div>
         
-        <div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {sentences.map((s, i) => (
             <SentenceBuilder key={i} {...s} />
           ))}
@@ -225,11 +228,11 @@ const Communication: React.FC = () => {
 
       {/* 4. CUMPRIMENTOS */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-           <div className="bg-emerald-600 p-1.5 rounded text-white"><Handshake size={16} /></div>
-           <h3 className="font-bold text-emerald-700 uppercase tracking-wider text-xs md:text-sm">4. Cumprimentos</h3>
+        <div className="flex items-center gap-2 mb-4 md:mb-6">
+           <div className="bg-emerald-600 p-1.5 md:p-2 rounded text-white"><Handshake size={16} className="md:w-6 md:h-6" /></div>
+           <h3 className="font-bold text-emerald-700 uppercase tracking-wider text-xs md:text-lg">4. Cumprimentos</h3>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-4">
           {greetings.map((item) => <Card key={item.pinyin} item={item} theme="green" />)}
         </div>
       </section>
