@@ -13,7 +13,8 @@ const Numbers: React.FC = () => {
     { val: 3, hanzi: '三', pinyin: 'Sān' }, { val: 4, hanzi: '四', pinyin: 'Sì' },
     { val: 5, hanzi: '五', pinyin: 'Wǔ' }, { val: 6, hanzi: '六', pinyin: 'Liù' },
     { val: 7, hanzi: '七', pinyin: 'Qī' }, { val: 8, hanzi: '八', pinyin: 'Bā' },
-    { val: 9, hanzi: '九', pinyin: 'Jiǔ' }, { val: 10, hanzi: '十', pinyin: 'Shí' }
+    { val: 9, hanzi: '九', pinyin: 'Jiǔ' }, { val: 10, hanzi: '十', pinyin: 'Shí' },
+    { val: 100, hanzi: '百', pinyin: 'Bǎi' }, { val: 1000, hanzi: '千', pinyin: 'Qiān' }
   ];
 
   const mapNumbers: Record<number, { hanzi: string, pinyin: string }> = { 
@@ -81,8 +82,8 @@ const Numbers: React.FC = () => {
         <p className="text-slate-500 font-sans text-sm">Toque nos cartões para ouvir a pronúncia.</p>
       </div>
 
-      {/* Grid 1-10 */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      {/* Grid 1-10 + 100/1000 */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {simpleNumbers.map((num) => (
           <button
             key={num.val}
